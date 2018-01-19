@@ -58,5 +58,5 @@ clf.fit(X,y)
 
 from sklearn.externals import joblib
 
-joblib.dump(clf, "/projects/btl/cli/AMP-classification/machine_learning/sampled_data_test/physicochemical_properties/MLP.m")
+joblib.dump(clf, "/projects/btl/cli/AMP-classification/machine_learning/sampled_data_test/physicochemical_properties/MLP.pkl")
 
