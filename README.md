@@ -13,8 +13,8 @@ For more information, please refer to:
 * Biopython
 
 ### Train
-Usage: 'python train_amplify.py [-h] -amp_tr AMP_TR -non_amp_tr NON_AMP_TR [-amp_te AMP_TE] [-non_amp_te NON_AMP_TE] -out_dir OUT_DIR -model_name MODEL_NAME'
-'''
+Usage: `python train_amplify.py [-h] -amp_tr AMP_TR -non_amp_tr NON_AMP_TR [-amp_te AMP_TE] [-non_amp_te NON_AMP_TE] -out_dir OUT_DIR -model_name MODEL_NAME`
+```
 optional arguments:
   -h, --help            show this help message and exit
   -amp_tr AMP_TR        Training AMP set, fasta file
@@ -26,11 +26,11 @@ optional arguments:
   -out_dir OUT_DIR      Output directory
   -model_name MODEL_NAME
                         File name of trained model weights
-'''
+```
 
 ### Predict
-Usage: 'python AMPlify.py [-h] -md MODEL_DIR [-m MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME] -s SEQS [-od OUT_DIR] [-of OUT_FORMAT]'
-'''
+Usage: `python AMPlify.py [-h] -md MODEL_DIR [-m MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME] -s SEQS [-od OUT_DIR] [-of OUT_FORMAT]`
+```
 optional arguments:
   -h, --help            show this help message and exit
   -md MODEL_DIR, --model_dir MODEL_DIR
@@ -42,7 +42,7 @@ optional arguments:
                         Output directory, optional
   -of OUT_FORMAT, --out_format OUT_FORMAT
                         Output format, txt or xlsx, optional
-'''
+```
 
 ### Author
 
