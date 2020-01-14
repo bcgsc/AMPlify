@@ -3,7 +3,9 @@
 """
 Created on Fri Sep 27 13:11:00 2019
 
-@author: cli
+Script for Multi-Head Scaled Dot-Head Attention and Context Attention layers
+
+@author: Chenkai Li
 """
 
 from keras import backend as K

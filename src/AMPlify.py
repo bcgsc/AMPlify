@@ -213,20 +213,26 @@ def main():
     # save to txt or xlsx    
     if args.out_format is not None:
         print('\nSaving results...')
-        out_name = 'AMPlify' + time.strftime('%Y%m%d%H%M%S', time.localtime())
+        out_name = 'AMPlify_results_' + time.strftime('%Y%m%d%H%M%S', time.localtime())
         if (args.out_format).lower() == 'txt':
             out_name = out_name + '.txt'
-            out = open(args.out_dir + '/' + out_name, 'w')
-            out.write(out_txt)
-            out.close()
+            if os.path.isfile(args.out_dir + '/' + out_name):
+                print('Unable to save! File already existed!')
+            else:
+                out = open(args.out_dir + '/' + out_name, 'w')
+                out.write(out_txt)
+                out.close()
         elif (args.out_format).lower() == 'xlsx':
             out_name = out_name + '.xlsx'
-            out = pd.DataFrame({'Sequence_ID':seq_id,
-                                'Sequence': peptide,
-                                'Scores': y_score,
-                                'Prediction': y_class,
-                                'Attention': [list(a) for a in attention]})
-            out.to_excel(args.out_dir + '/' + out_name, index=False)
+            if os.path.isfile(args.out_dir + '/' + out_name):
+                print('Unable to save! File already existed!')
+            else:
+                out = pd.DataFrame({'Sequence_ID':seq_id,
+                                    'Sequence': peptide,
+                                    'Score': y_score,
+                                    'Prediction': y_class,
+                                    'Attention': [list(a) for a in attention]})
+                out.to_excel(args.out_dir + '/' + out_name, index=False)
         else:
             print('Unable to save! Results can only be saved as txt or xlsx files!')
             
