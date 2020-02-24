@@ -6,7 +6,8 @@ For more information, please refer to:
 
 ### Dependencies
 * Python 3
-* Keras
+* Keras 2.2.4
+* Tensorflow 1.12.0
 * Numpy
 * Pandas
 * Scikit-learn
@@ -36,7 +37,7 @@ optional arguments:
   -md MODEL_DIR, --model_dir MODEL_DIR
                         Directory of where models are stored
   -m MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME, --model_name MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME
-                        File names of 5 trained models
+                        File names of 5 trained models, optional
   -s SEQS, --seqs SEQS  Sequences for prediction, fasta file
   -od OUT_DIR, --out_dir OUT_DIR
                         Output directory, optional
