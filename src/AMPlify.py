@@ -168,7 +168,8 @@ def main():
                                  'model_weights_4.h5', 'model_weights_5.h5'], required=False)
     parser.add_argument('-s', '--seqs', help="Sequences for prediction, fasta file", required=True)
     parser.add_argument('-od', '--out_dir', help="Output directory (optional)", default=os.getcwd(), required=False)
-    parser.add_argument('-of', '--out_format', help="Output format, txt or xlsx (optional)", default='txt', required=False)
+    parser.add_argument('-of', '--out_format', help="Output format, txt or xlsx (optional)", 
+                        choices = ['txt', 'xlsx'], default='txt', required=False)
     
     args = parser.parse_args()
 
@@ -223,7 +224,7 @@ def main():
                 out.write(out_txt)
                 out.close()
                 print('\nResults saved as: ' + args.out_dir + '/' + out_name)
-        elif (args.out_format).lower() == 'xlsx':
+        else:
             out_name = out_name + '.xlsx'
             if os.path.isfile(args.out_dir + '/' + out_name):
                 print('\nUnable to save! File already existed!')
@@ -235,8 +236,6 @@ def main():
                                     'Attention': [list(a) for a in attention]})
                 out.to_excel(args.out_dir + '/' + out_name, index=False)
                 print('\nResults saved as: ' + args.out_dir + '/' + out_name)
-        else:
-            print('\nUnable to save! Results can only be saved as txt or xlsx files!')
             
 
 if __name__ == "__main__":

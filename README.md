@@ -41,9 +41,12 @@ optional arguments:
   -s SEQS, --seqs SEQS  Sequences for prediction, fasta file
   -od OUT_DIR, --out_dir OUT_DIR
                         Output directory (optional)
-  -of OUT_FORMAT, --out_format OUT_FORMAT
+  -of {txt,xlsx}, --out_format {txt,xlsx}
                         Output format, txt or xlsx (optional)
 ```
+
+### Pre-trained sub-models
+Weights for 5 pre-trained sub-models are stored in the `models` folder. Please specify the directory if you would like to use those models for prediction.
 
 ### Author
 
