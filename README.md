@@ -28,7 +28,7 @@ optional arguments:
 ```
 
 ### Predict
-Usage: `python AMPlify.py [-h] -md MODEL_DIR [-m MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME] -s SEQS [-od OUT_DIR] [-of OUT_FORMAT]`
+Usage: `python AMPlify.py [-h] -md MODEL_DIR [-m MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME] -s SEQS [-od OUT_DIR] [-of {txt,xlsx}]`
 ```
 optional arguments:
   -h, --help            Show this help message and exit
