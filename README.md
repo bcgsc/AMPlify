@@ -2,8 +2,6 @@
 
 AMPlify is an attentive deep learning model for antimicrobial peptide prediction.
 
-For more information, please refer to:
-
 ### Dependencies
 * Python 3
 * Keras 2.2.4
@@ -33,7 +31,7 @@ optional arguments:
 Usage: `python AMPlify.py [-h] -md MODEL_DIR [-m MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME] -s SEQS [-od OUT_DIR] [-of OUT_FORMAT]`
 ```
 optional arguments:
-  -h, --help            show this help message and exit
+  -h, --help            Show this help message and exit
   -md MODEL_DIR, --model_dir MODEL_DIR
                         Directory of where models are stored
   -m MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME, --model_name MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME

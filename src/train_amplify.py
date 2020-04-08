@@ -177,7 +177,7 @@ def main():
             indv_pred_test.append(temp_pred_test)
             temp_pred_class_test = predict_by_class(temp_pred_test)
             tn_indv, fp_indv, fn_indv, tp_indv = confusion_matrix(y_test, temp_pred_class_test).ravel()
-            print(confusion_matrix(y_test, temp_pred_class_test))
+            #print(confusion_matrix(y_test, temp_pred_class_test))
             print('test acc: ', accuracy_score(y_test, temp_pred_class_test))  
             print('test sens: ', tp_indv/(tp_indv+fn_indv))
             print('test spec: ', tn_indv/(tn_indv+fp_indv))
