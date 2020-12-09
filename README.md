@@ -17,12 +17,12 @@ For more information, please refer to the preprint: https://www.biorxiv.org/cont
 No non-standard hardware required.
 
 ### Installation
-Download the zip file from the [releases](https://github.com/bcgsc/AMPlify/releases) section, and unzip the file to the chosen directory for the software installation.
+Download the zip file from the [Releases](https://github.com/bcgsc/AMPlify/releases) section, and unzip the file to the chosen directory for the software installation.
 
 Typical install time: < 1 minute.
 
 ### Datasets
-Datasets for training and testing are stored in the 'data' folder. Please specify the directory if you would like to use those datasets for training or testing the model.
+Datasets for training and testing are stored in the `data` folder. Please specify the directory if you would like to use those datasets for training or testing the model.
 
 ### Pre-trained sub-models
 Weights for 5 pre-trained sub-models are stored in the `models` folder. Please specify the directory if you would like to use those models for prediction.
@@ -44,7 +44,7 @@ optional arguments:
 ```
 Example: `python train_amplify.py -amp_tr ../data/AMP_train_20190414.fa -non_amp_tr ../data/non_AMP_train_20190414.fa -amp_te ../data/AMP_test_20190414.fa -non_amp_te ../data/non_AMP_test_20190414.fa -out_dir ../models/ -model_name model`
 
-Expected output: 1) The model weights trained using the specified data; 2) Test set performance if test sequences are specified.
+Expected output: 1) The model weights trained using the specified data; 2) Test set performance, if test sequences have been specified.
 
 Typical run time on the entire training set of `AMP_train_20190414.fa` + `non_AMP_train_20190414.fa`: ~ 1 day.
 
@@ -68,7 +68,7 @@ Example: `python AMPlify.py -md ../models/ -s ../data/AMP_test_20190414.fa`
 
 Expected output: Prediction scores, classes and attention scores of the input sequences.
 
-Typical run time on the AMP test set `AMP_test_20190414.fa`: ~6 minutes.
+Typical run time on the AMP test set `AMP_test_20190414.fa`: ~ 6 minutes.
 
 
 ### Author
