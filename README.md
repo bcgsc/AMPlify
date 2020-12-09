@@ -1,6 +1,7 @@
 # AMPlify
 
 AMPlify is an attentive deep learning model for antimicrobial peptide prediction.
+
 For more information, please refer to the preprint: https://www.biorxiv.org/content/10.1101/2020.06.16.155705v1
 
 ### Dependencies
@@ -12,11 +13,12 @@ For more information, please refer to the preprint: https://www.biorxiv.org/cont
 * Pandas
 * Scikit-learn
 * Biopython
+
 No non-standard hardware required.
 
 ### Installation
-
 Download the zip file from the [releases](https://github.com/bcgsc/AMPlify/releases) section, and unzip the file to the chosen directory for the software installation.
+
 Typical install time: < 1 minute.
 
 ### Datasets
@@ -41,7 +43,9 @@ optional arguments:
                         File name of trained model weights
 ```
 Example: `python train_amplify.py -amp_tr ../data/AMP_train_20190414.fa -non_amp_tr ../data/non_AMP_train_20190414.fa -amp_te ../data/AMP_test_20190414.fa -non_amp_te ../data/non_AMP_test_20190414.fa -out_dir ../models/ -model_name model`
+
 Expected output: 1) The model weights trained using the specified data; 2) Test set performance if test sequences are specified.
+
 Typical run time on the entire training set of `AMP_train_20190414.fa` + `non_AMP_train_20190414.fa`: ~ 1 day.
 
 
@@ -61,7 +65,9 @@ optional arguments:
                         Output format, txt or xlsx (optional)
 ```
 Example: `python AMPlify.py -md ../models/ -s ../data/AMP_test_20190414.fa`
+
 Expected output: Prediction scores, classes and attention scores of the input sequences.
+
 Typical run time on the AMP test set `AMP_test_20190414.fa`: ~6 minutes.
 
 
