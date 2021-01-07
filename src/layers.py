@@ -108,20 +108,20 @@ class Attention(Layer):
         amount_features = input_shape[-1]
         attention_size  = input_shape[-1]
 
-        self.W = self.add_weight((amount_features, attention_size),
+        self.W = self.add_weight(shape=(amount_features, attention_size),
                                  initializer=self.initializer,
                                  regularizer=self.W_regularizer,
                                  constraint=self.W_constraint,
                                  name='attention_W')
         self.b = None
         if self.bias:
-            self.b = self.add_weight((attention_size,),
+            self.b = self.add_weight(shape=(attention_size,),
                                      initializer='zero',
                                      regularizer=self.b_regularizer,
                                      constraint=self.b_constraint,
                                      name='attention_b')
 
-        self.context = self.add_weight((attention_size,),
+        self.context = self.add_weight(shape=(attention_size,),
                                        initializer=self.initializer,
                                        regularizer=self.u_regularizer,
                                        constraint=self.u_constraint,
