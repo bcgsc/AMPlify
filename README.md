@@ -50,7 +50,7 @@ Typical run time on the entire training set of `AMP_train_20190414.fa` + `non_AM
 
 
 ### Predict
-Usage: `python AMPlify.py [-h] -md MODEL_DIR [-m MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME] -s SEQS [-od OUT_DIR] [-of {txt,xlsx}]`
+Usage: `python AMPlify.py [-h] -md MODEL_DIR [-m MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME] -s SEQS [-od OUT_DIR] [-of {txt,xlsx}] [-att {on,off}]`
 ```
 optional arguments:
   -h, --help            Show this help message and exit
@@ -61,12 +61,15 @@ optional arguments:
   -s SEQS, --seqs SEQS  Sequences for prediction, fasta file
   -od OUT_DIR, --out_dir OUT_DIR
                         Output directory (optional)
-  -of {txt,xlsx}, --out_format {txt,xlsx}
-                        Output format, txt or xlsx (optional)
+  -of {txt,xlsx}, --out_format {txt,tsv}
+                        Output format, txt or tsv (optional)
+  -att {on,off}, --attention {on,off}
+                        Whether to output attention scores, on or off (optional)
+
 ```
 Example: `python AMPlify.py -md ../models/ -s ../data/AMP_test_20190414.fa`
 
-Expected output: Prediction scores, classes and attention scores of the input sequences.
+Expected output: Predicted confident scores and classes of the input sequences.
 
 Typical run time on the AMP test set `AMP_test_20190414.fa`: ~ 6 minutes.
 
