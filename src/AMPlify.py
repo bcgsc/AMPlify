@@ -168,8 +168,10 @@ def main():
                                  'model_weights_4.h5', 'model_weights_5.h5'], required=False)
     parser.add_argument('-s', '--seqs', help="Sequences for prediction, fasta file", required=True)
     parser.add_argument('-od', '--out_dir', help="Output directory (optional)", default=os.getcwd(), required=False)
-    parser.add_argument('-of', '--out_format', help="Output format, txt or xlsx (optional)", 
-                        choices = ['txt', 'xlsx'], default='txt', required=False)
+    parser.add_argument('-of', '--out_format', help="Output format, txt or tsv (optional)", 
+                        choices=['txt', 'tsv'], default='txt', required=False)
+    parser.add_argument('-att', '--attention', help="Whether to output attention scores, on or off (optional)",
+                        choices=['on', 'off'], default='off', required=False)
     
     args = parser.parse_args()
 
@@ -178,7 +180,8 @@ def main():
     # load models for final output
     out_model = load_multi_model(models, build_amplify)
     # load_models for attention
-    att_model = load_multi_model(models, build_attention)
+    if args.attention == 'on':
+        att_model = load_multi_model(models, build_attention)
 
     # read input sequences
     aa = ['A','C','D','E','F','G','H','I','K','L','M','N','P','Q','R','S','T','V','W','Y']
@@ -200,14 +203,17 @@ def main():
     y_class = proba_to_class_name(y_score)
 
     # get attention scores for each sequence
-    attention = get_attention_scores(y_indv_list, att_model, peptide, X_seq)
+    if args.attention == 'on':
+        attention = get_attention_scores(y_indv_list, att_model, peptide, X_seq)
 
     # output the predictions
     out_txt = ''
     for i in range(len(seq_id)):
         temp_txt = 'Sequence ID: '+seq_id[i]+'\n'+'Sequence: '+peptide[i]+'\n' \
-        +'Score: '+str(y_score[i])+'\n'+'Prediction: '+y_class[i]+'\n' \
-        +'Attention: '+str(list(attention[i]))+'\n\n'
+        +'Score: '+str(y_score[i])+'\n'+'Prediction: '+y_class[i]+'\n'
+        if args.attention == 'on':
+            temp_txt = temp_txt+'Attention: '+str(list(attention[i]))+'\n'
+        temp_txt = temp_txt+'\n'
         print(temp_txt)
         out_txt = out_txt + temp_txt
     
@@ -225,16 +231,22 @@ def main():
                 out.close()
                 print('\nResults saved as: ' + args.out_dir + '/' + out_name)
         else:
-            out_name = out_name + '.xlsx'
+            out_name = out_name + '.tsv'
             if os.path.isfile(args.out_dir + '/' + out_name):
                 print('\nUnable to save! File already existed!')
             else:
-                out = pd.DataFrame({'Sequence_ID':seq_id,
-                                    'Sequence': peptide,
-                                    'Score': y_score,
-                                    'Prediction': y_class,
-                                    'Attention': [list(a) for a in attention]})
-                out.to_excel(args.out_dir + '/' + out_name, index=False)
+                if args.attention == 'on':
+                    out = pd.DataFrame({'Sequence_ID':seq_id,
+                                        'Sequence': peptide,
+                                        'Score': y_score,
+                                        'Prediction': y_class,
+                                        'Attention': [list(a) for a in attention]})
+                else:
+                    out = pd.DataFrame({'Sequence_ID':seq_id,
+                                        'Sequence': peptide,
+                                        'Score': y_score,
+                                        'Prediction': y_class})
+                out.to_csv(args.out_dir + '/' + out_name, sep='\t', index=False)
                 print('\nResults saved as: ' + args.out_dir + '/' + out_name)
             
 
