@@ -17,9 +17,28 @@ For more information, please refer to the preprint: https://www.biorxiv.org/cont
 No non-standard hardware required.
 
 ### Installation
+
 Download the zip file from the [Releases](https://github.com/bcgsc/AMPlify/releases) section, and unzip the file to the chosen directory for the software installation.
 
 Typical install time: < 1 minute.
+
+### Setting up `conda` environment
+
+Dependencies can be installed by building a `conda` environment via the YML file:
+```
+conda env create -f amplify.yml
+```
+
+To activate this environment, use:
+```
+conda activate amplify
+```
+`train_amplify.py` and `AMPlify.py` can now be run. See usage information below.
+
+To deactivate an active environment, use:
+```
+conda deactivate
+```
 
 ### Datasets
 Datasets for training and testing are stored in the `data` folder. Please specify the directory if you would like to use those datasets for training or testing the model.
