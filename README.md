@@ -5,22 +5,19 @@ AMPlify is an attentive deep learning model for antimicrobial peptide prediction
 For more information, please refer to the preprint: https://www.biorxiv.org/content/10.1101/2020.06.16.155705v1
 
 ### Dependencies
-* CentOS Linux 7
-* Python 3
+
+* Python 3.6
 * Keras 2.2.4
-* Tensorflow 1.11/1.12/1.13
-* Numpy
+* Tensorflow 1.12
+* Numpy <1.17
 * Pandas
 * Scikit-learn
 * Biopython
-
-No non-standard hardware required.
+* h5py <3
 
 ### Installation
 
-Download the zip file from the [Releases](https://github.com/bcgsc/AMPlify/releases) section, and unzip the file to the chosen directory for the software installation.
-
-Typical install time: < 1 minute.
+News: We have made the tool into a bioconda package to simplify the installation process. We are currently waiting for the approval from the maintainers of bioconda, and this new way of installation will be available shortly (https://github.com/bioconda/bioconda-recipes/pull/30417).
 
 ### Setting up `conda` environment
 
@@ -41,12 +38,15 @@ conda deactivate
 ```
 
 ### Datasets
+
 Datasets for training and testing are stored in the `data` folder. Please specify the directory if you would like to use those datasets for training or testing the model.
 
 ### Pre-trained sub-models
+
 Weights for 5 pre-trained sub-models are stored in the `models` folder. Please specify the directory if you would like to use those models for prediction.
 
 ### Train
+
 Usage: `python train_amplify.py [-h] -amp_tr AMP_TR -non_amp_tr NON_AMP_TR [-amp_te AMP_TE] [-non_amp_te NON_AMP_TE] -out_dir OUT_DIR -model_name MODEL_NAME`
 ```
 optional arguments:
@@ -65,10 +65,8 @@ Example: `python train_amplify.py -amp_tr ../data/AMP_train_20190414.fa -non_amp
 
 Expected output: 1) The model weights trained using the specified data; 2) Test set performance, if test sequences have been specified.
 
-Typical run time on the entire training set of `AMP_train_20190414.fa` + `non_AMP_train_20190414.fa`: ~ 1 day.
-
-
 ### Predict
+
 Usage: `python AMPlify.py [-h] -md MODEL_DIR [-m MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME] -s SEQS [-od OUT_DIR] [-of {txt,tsv}] [-att {on,off}]`
 ```
 optional arguments:
@@ -90,8 +88,9 @@ Example: `python AMPlify.py -md ../models/ -s ../data/AMP_test_20190414.fa`
 
 Expected output: Predicted confident scores and classes of the input sequences.
 
-Typical run time on the AMP test set `AMP_test_20190414.fa`: ~ 6 minutes.
+### AMP discovery
 
+Additional scripts and data for our AMP discovery pipeline are provided in the `auxiliary` folder. Parameters for GMAP and MAKER2 are described in the Methods section of the manuscript.
 
 ### Author
 
