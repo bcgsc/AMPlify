@@ -67,12 +67,12 @@ Expected output: 1) The model weights trained using the specified data; 2) Test 
 
 ### Predict
 
-Usage: `python AMPlify.py [-h] -md MODEL_DIR [-m MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME] -s SEQS [-od OUT_DIR] [-of {txt,tsv}] [-att {on,off}]`
+Usage: `python AMPlify.py [-h] [-md MODEL_DIR] [-m MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME] -s SEQS [-od OUT_DIR] [-of {txt,tsv}] [-att {on,off}]`
 ```
 optional arguments:
   -h, --help            Show this help message and exit
   -md MODEL_DIR, --model_dir MODEL_DIR
-                        Directory of where models are stored
+                        Directory of where models are stored (optional)
   -m MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME, --model_name MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME MODEL_NAME
                         File names of 5 trained models (optional)
   -s SEQS, --seqs SEQS  Sequences for prediction, fasta file
@@ -84,7 +84,7 @@ optional arguments:
                         Whether to output attention scores, on or off (optional)
 
 ```
-Example: `python AMPlify.py -md ../models/ -s ../data/AMP_test_20190414.fa`
+Example: `python AMPlify.py -s ../data/AMP_test_20190414.fa`
 
 Expected output: Predicted confident scores and classes of the input sequences.
 

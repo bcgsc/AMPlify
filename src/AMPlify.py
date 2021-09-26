@@ -162,14 +162,15 @@ def main():
         '''),
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
-    parser.add_argument('-md', '--model_dir', help="Directory of where models are stored", required=True)
+    parser.add_argument('-md', '--model_dir', help="Directory of where models are stored (optional)", 
+                        default=os.path.dirname(os.path.dirname(os.path.realpath(__file__)))+'/models', required=False)
     parser.add_argument('-m', '--model_name', nargs=5, help="File names of 5 trained models (optional)", 
                         default=['model_weights_1.h5', 'model_weights_2.h5', 'model_weights_3.h5', 
                                  'model_weights_4.h5', 'model_weights_5.h5'], required=False)
     parser.add_argument('-s', '--seqs', help="Sequences for prediction, fasta file", required=True)
     parser.add_argument('-od', '--out_dir', help="Output directory (optional)", default=os.getcwd(), required=False)
     parser.add_argument('-of', '--out_format', help="Output format, txt or tsv (optional)", 
-                        choices=['txt', 'tsv'], default='txt', required=False)
+                        choices=['txt', 'tsv'], default='tsv', required=False)
     parser.add_argument('-att', '--attention', help="Whether to output attention scores, on or off (optional)",
                         choices=['on', 'off'], default='off', required=False)
     
