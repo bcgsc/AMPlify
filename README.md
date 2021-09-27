@@ -39,11 +39,11 @@ conda deactivate
 
 ### Datasets
 
-Datasets for training and testing are stored in the `data` folder.
+Datasets for training and testing are stored in the `data` folder. Please specify the directory if you would like to use those datasets for training or testing the model.
 
 ### Pre-trained sub-models
 
-Weights for 5 pre-trained sub-models are stored in the `models` folder. Please specify the directory if you would like to use those models for prediction.
+Weights for 5 pre-trained sub-models are stored in the `models` folder.
 
 ### Train
 
