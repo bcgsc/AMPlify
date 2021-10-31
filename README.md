@@ -16,19 +16,23 @@ For more information, please refer to the preprint: https://www.biorxiv.org/cont
 * h5py <3
 
 ### Installation
+
 1. Create a new `conda` environment:
 ```
 conda create -n amplify python=3.6
 ```
+
 2. Activate the environment:
 ```
 conda activate amplify
 ```
+
 3. Install AMPlify in the environment:
 ```
 conda install -c bioconda amplify
 ```
 `train_amplify` and `AMPlify` can now be run. See usage information below.
+
 4. To deactivate an active environment, use:
 ```
 conda deactivate
