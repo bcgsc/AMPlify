@@ -191,7 +191,7 @@ def main():
         seq_id.append(str(seq_record.id))
         peptide.append(str(seq_record.seq))
     
-    # look for indices for valid sequences
+    # look for indices of valid sequences
     valid_ix = []
     for i in range(len(peptide)):
         if len(peptide[i]) <= 200 and len(peptide[i]) >= 2 and set(peptide[i])-set(aa) == set():
@@ -264,7 +264,7 @@ def main():
                                         'Sequence': peptide,
                                         'Score': y_score,
                                         'Prediction': y_class,
-                                        'Attention': [a for a in attention]})
+                                        'Attention': attention})
                 else:
                     out = pd.DataFrame({'Sequence_ID':seq_id,
                                         'Sequence': peptide,
