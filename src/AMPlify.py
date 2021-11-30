@@ -113,7 +113,6 @@ def get_attention_scores(indv_pred_list, attention_model_list, seq_list, X):
         X - processed input of the model
     Output: 
         attention scores for all sequences from the most confident model
-        attention scores for all sequences from all models
     """
     #X = one_hot_padding(seq_list, MAX_LEN)
     # calculate all attention scores
@@ -189,23 +188,47 @@ def main():
     seq_id = [] # peptide IDs
     peptide = [] # peptide sequences
     for seq_record in SeqIO.parse(args.seqs, 'fasta'):
-        if len(seq_record.seq) > 200 or len(seq_record.seq) < 2 or set(seq_record.seq)-set(aa) != set():
-            raise Exception('Invalid Sequences!')
-        else:
-            seq_id.append(str(seq_record.id))
-            peptide.append(str(seq_record.seq))
+        seq_id.append(str(seq_record.id))
+        peptide.append(str(seq_record.seq))
+    
+    # look for indices for valid sequences
+    valid_ix = []
+    for i in range(len(peptide)):
+        if len(peptide[i]) <= 200 and len(peptide[i]) >= 2 and set(peptide[i])-set(aa) == set():
+            valid_ix.append(i)
+            
+    # select valid sequences for prediction
+    peptide_valid = [peptide[i] for i in valid_ix]
     
     # generate one-hot encoding input and pad sequences into MAX_LEN long
-    X_seq = one_hot_padding(peptide, MAX_LEN)
+    X_seq_valid = one_hot_padding(peptide_valid, MAX_LEN)
    
     # ensemble results for the 5 models
     print('\nPredicting...')
-    y_score, y_indv_list = ensemble(out_model, X_seq)
-    y_class = proba_to_class_name(y_score)
+    y_score_valid, y_indv_list_valid = ensemble(out_model, X_seq_valid)
+    y_class_valid = proba_to_class_name(y_score_valid)
+    y_score = []
+    y_class = []
 
     # get attention scores for each sequence
     if args.attention == 'on':
-        attention = get_attention_scores(y_indv_list, att_model, peptide, X_seq)
+        attention_valid = get_attention_scores(y_indv_list_valid, att_model, peptide_valid, X_seq_valid)
+        attention = []
+        
+    # get results of the entire list, with invalid sequences labeled with NA
+    ix = 0
+    for i in range(len(peptide)):
+        if i in valid_ix:
+            y_score.append(y_score_valid[ix])
+            y_class.append(y_class_valid[ix])
+            if args.attention == 'on':
+                attention.append(list(attention_valid[ix]))
+            ix = ix + 1
+        else:
+            y_score.append('NA')
+            y_class.append('NA')
+            if args.attention == 'on':
+                attention.append('NA')
 
     # output the predictions
     out_txt = ''
@@ -213,12 +236,12 @@ def main():
         temp_txt = 'Sequence ID: '+seq_id[i]+'\n'+'Sequence: '+peptide[i]+'\n' \
         +'Score: '+str(y_score[i])+'\n'+'Prediction: '+y_class[i]+'\n'
         if args.attention == 'on':
-            temp_txt = temp_txt+'Attention: '+str(list(attention[i]))+'\n'
+            temp_txt = temp_txt+'Attention: '+str(attention[i])+'\n'
         temp_txt = temp_txt+'\n'
         print(temp_txt)
         out_txt = out_txt + temp_txt
     
-    # save to txt or xlsx    
+    # save to tsv or xlsx    
     if args.out_format is not None:
         print('\nSaving results...')
         out_name = 'AMPlify_results_' + time.strftime('%Y%m%d%H%M%S', time.localtime())
@@ -241,7 +264,7 @@ def main():
                                         'Sequence': peptide,
                                         'Score': y_score,
                                         'Prediction': y_class,
-                                        'Attention': [list(a) for a in attention]})
+                                        'Attention': [a for a in attention]})
                 else:
                     out = pd.DataFrame({'Sequence_ID':seq_id,
                                         'Sequence': peptide,

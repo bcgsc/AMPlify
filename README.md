@@ -87,7 +87,7 @@ optional arguments:
 ```
 Example: `AMPlify -s ../data/AMP_test_20190414.fa`
 
-Expected output: Predicted confident scores and classes of the input sequences.
+Expected output: Predicted confident scores and classes of the input sequences. Results for invalid sequences will be filled with `NA`.
 
 ### AMP discovery
 
