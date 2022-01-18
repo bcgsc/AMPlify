@@ -208,6 +208,7 @@ def main():
     y_score_valid, y_indv_list_valid = ensemble(out_model, X_seq_valid)
     y_class_valid = proba_to_class_name(y_score_valid)
     y_score = []
+    y_log_score = [] # -10*log10(1-y_score)
     y_class = []
 
     # get attention scores for each sequence
@@ -219,13 +220,18 @@ def main():
     ix = 0
     for i in range(len(peptide)):
         if i in valid_ix:
-            y_score.append(y_score_valid[ix])
+            y_score.append(round(y_score_valid[ix], 8))
+            if y_score_valid[ix] < 0.99999999:
+                y_log_score.append(round(-10*np.log10(1-y_score_valid[ix]), 4))
+            else:
+                y_log_score.append(round(-10*np.log10(1-0.99999999), 4))
             y_class.append(y_class_valid[ix])
             if args.attention == 'on':
                 attention.append(list(attention_valid[ix]))
             ix = ix + 1
         else:
             y_score.append('NA')
+            y_log_score.append('NA')
             y_class.append('NA')
             if args.attention == 'on':
                 attention.append('NA')
@@ -234,7 +240,8 @@ def main():
     out_txt = ''
     for i in range(len(seq_id)):
         temp_txt = 'Sequence ID: '+seq_id[i]+'\n'+'Sequence: '+peptide[i]+'\n' \
-        +'Score: '+str(y_score[i])+'\n'+'Prediction: '+y_class[i]+'\n'
+        +'Probability_score: '+str(y_score[i])+'\n'+'AMPlify_log_scaled_score: ' \
+        +str(y_log_score[i])+'\n'+'Prediction: '+y_class[i]+'\n'
         if args.attention == 'on':
             temp_txt = temp_txt+'Attention: '+str(attention[i])+'\n'
         temp_txt = temp_txt+'\n'
@@ -262,13 +269,15 @@ def main():
                 if args.attention == 'on':
                     out = pd.DataFrame({'Sequence_ID':seq_id,
                                         'Sequence': peptide,
-                                        'Score': y_score,
+                                        'Probability_score': y_score,
+                                        'AMPlify_log_scaled_score:': y_log_score,
                                         'Prediction': y_class,
                                         'Attention': attention})
                 else:
                     out = pd.DataFrame({'Sequence_ID':seq_id,
                                         'Sequence': peptide,
-                                        'Score': y_score,
+                                        'Probability_score': y_score,
+                                        'AMPlify_log_scaled_score:': y_log_score,
                                         'Prediction': y_class})
                 out.to_csv(args.out_dir + '/' + out_name, sep='\t', index=False)
                 print('\nResults saved as: ' + args.out_dir + '/' + out_name)
