@@ -2,8 +2,6 @@
 
 AMPlify is an attentive deep learning model for antimicrobial peptide prediction.
 
-For more information, please refer to the preprint: https://www.biorxiv.org/content/10.1101/2020.06.16.155705v1
-
 ### Dependencies
 
 * Python 3.6
@@ -100,3 +98,9 @@ Chenkai Li (cli@bcgsc.ca)
 ### Contact
 
 If you have any questions, comments, or would like to report a bug, please file a Github issue or contact us.
+
+### Citation
+
+If you use AMPlify in your work, please cite [our publication](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-022-08310-4):
+> Li, C., Sutherland, D., Hammond, S.A. et al. AMPlify: attentive deep learning model for discovery of novel antimicrobial peptides effective against WHO priority pathogens. BMC Genomics 23, 77 (2022). https://doi.org/10.1186/s12864-022-08310-4
+--------------------------------------------------------------------------------

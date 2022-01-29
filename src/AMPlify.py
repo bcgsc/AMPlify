@@ -212,6 +212,7 @@ def main():
     y_class = []
     y_length = []
     y_charge = []
+    
     # get attention scores for each sequence
     if args.attention == 'on':
         attention_valid = get_attention_scores(y_indv_list_valid, att_model, peptide_valid, X_seq_valid)
@@ -227,27 +228,25 @@ def main():
             else:
                 y_log_score.append(round(-10*np.log10(1-0.99999999), 4))
             y_class.append(y_class_valid[ix])
+            y_length.append(len(peptide[i]))
+            y_charge.append(peptide[i].count('K') + peptide[i].count('R') - peptide[i].count('D') - peptide[i].count('E'))
             if args.attention == 'on':
                 attention.append(list(attention_valid[ix]))
-
-            # calculate charge
-            y_charge.append(peptide[ix].count('K') + peptide[ix].count('R') - peptide[ix].count('D') - peptide[ix].count('E'))
-            # calculate length
-            y_length.append(len(peptide[ix]))
             ix = ix + 1
         else:
             y_score.append('NA')
             y_log_score.append('NA')
             y_class.append('NA')
+            y_length.append('NA')
+            y_charge.append('NA')
             if args.attention == 'on':
                 attention.append('NA')
-            y_charge.append('NA')
-            y_length.append('NA')
+
     # output the predictions
     out_txt = ''
     for i in range(len(seq_id)):
         temp_txt = 'Sequence ID: '+seq_id[i]+'\n'+'Sequence: '+peptide[i]+'\n' \
-        + 'Length: ' + str(y_length[i]) + '\n' + 'Charge: ' + str(y_charge[i]) + '\n' \
+        +'Length: '+str(y_length[i])+'\n'+'Charge: '+str(y_charge[i])+'\n' \
         +'Probability_score: '+str(y_score[i])+'\n'+'AMPlify_log_scaled_score: ' \
         +str(y_log_score[i])+'\n'+'Prediction: '+y_class[i]+'\n'
         if args.attention == 'on':
