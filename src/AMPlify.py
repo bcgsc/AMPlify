@@ -27,7 +27,7 @@ MAX_LEN = 200 # max length for input sequences
 def one_hot_padding(seq_list,padding):
     """
     Generate features for aa sequences [one-hot encoding with zero padding].
-    Input: seq_list: list of sequences,
+    Input: seq_list: list of sequences, 
            padding: padding length, >= max sequence length.
     Output: one-hot encoding of sequences.
     """
@@ -36,13 +36,13 @@ def one_hot_padding(seq_list,padding):
     aa = ['A','C','D','E','F','G','H','I','K','L','M','N','P','Q','R','S','T','V','W','Y']
     for i in range(len(aa)):
         one_hot[aa[i]] = [0]*20
-        one_hot[aa[i]][i] = 1
+        one_hot[aa[i]][i] = 1 
     for i in range(len(seq_list)):
         feat = []
         for j in range(len(seq_list[i])):
             feat.append(one_hot[seq_list[i][j]])
         feat = feat + [[0]*20]*(padding-len(seq_list[i]))
-        feat_list.append(feat)
+        feat_list.append(feat)   
     return(np.array(feat_list))
 
 
@@ -53,7 +53,7 @@ def build_amplify():
     inputs = Input(shape=(MAX_LEN, 20), name='Input')
     masking = Masking(mask_value=0.0, input_shape=(MAX_LEN, 20), name='Masking')(inputs)
     hidden = Bidirectional(LSTM(512, use_bias=True, dropout=0.5, return_sequences=True), name='Bidirectional-LSTM')(masking)
-    hidden = MultiHeadAttention(head_num=32, activation='relu', use_bias=True,
+    hidden = MultiHeadAttention(head_num=32, activation='relu', use_bias=True, 
                                 return_multi_attention=False, name='Multi-Head-Attention')(hidden)
     hidden = Dropout(0.2, name = 'Dropout_1')(hidden)
     hidden = Attention(name='Attention')(hidden)
@@ -69,7 +69,7 @@ def build_attention():
     inputs = Input(shape=(MAX_LEN, 20), name='Input')
     masking = Masking(mask_value=0.0, input_shape=(MAX_LEN, 20), name='Masking')(inputs)
     hidden = Bidirectional(LSTM(512, use_bias=True, dropout=0.5, return_sequences=True), name='Bidirectional-LSTM')(masking)
-    hidden = MultiHeadAttention(head_num=32, activation='relu', use_bias=True,
+    hidden = MultiHeadAttention(head_num=32, activation='relu', use_bias=True, 
                                 return_multi_attention=False, name='Multi-Head-Attention')(hidden)
     hidden = Dropout(0.2, name = 'Dropout_1')(hidden)
     hidden = Attention(return_attention=True, name='Attention')(hidden)
@@ -93,7 +93,7 @@ def load_multi_model(model_dir_list, architecture):
 
 def ensemble(model_list, X):
     """
-    Ensemble the list of models with processed input X,
+    Ensemble the list of models with processed input X, 
     Return results for ensemble and individual models
     """
     indv_pred = [] # list of predictions from each individual model
@@ -106,12 +106,12 @@ def ensemble(model_list, X):
 def get_attention_scores(indv_pred_list, attention_model_list, seq_list, X):
     """
     Get attention scores of the most confident model with processed input X.
-    Input:
+    Input: 
         inv_pred_list - list of predictions from individual models
         attention_model_list - list of attention models
         seq_list - list of peptide sequences
         X - processed input of the model
-    Output:
+    Output: 
         attention scores for all sequences from the most confident model
     """
     #X = one_hot_padding(seq_list, MAX_LEN)
@@ -155,24 +155,24 @@ def main():
         AMPlify
         ------------------------------------------------------
         Predict whether a sequence is AMP or not.
-        Input sequences should be in fasta format.
-        Sequences should be shorter than 201 amino acids long,
-        and should not contain amino acids other than the 20 standard ones.
+        Input sequences should be in fasta format. 
+        Sequences should be shorter than 201 amino acids long, 
+        and should not contain amino acids other than the 20 standard ones. 
         '''),
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
-    parser.add_argument('-md', '--model_dir', help="Directory of where models are stored (optional)",
+    parser.add_argument('-md', '--model_dir', help="Directory of where models are stored (optional)", 
                         default=os.path.dirname(os.path.dirname(os.path.realpath(__file__)))+'/models', required=False)
-    parser.add_argument('-m', '--model_name', nargs=5, help="File names of 5 trained models (optional)",
-                        default=['model_weights_1.h5', 'model_weights_2.h5', 'model_weights_3.h5',
+    parser.add_argument('-m', '--model_name', nargs=5, help="File names of 5 trained models (optional)", 
+                        default=['model_weights_1.h5', 'model_weights_2.h5', 'model_weights_3.h5', 
                                  'model_weights_4.h5', 'model_weights_5.h5'], required=False)
     parser.add_argument('-s', '--seqs', help="Sequences for prediction, fasta file", required=True)
     parser.add_argument('-od', '--out_dir', help="Output directory (optional)", default=os.getcwd(), required=False)
-    parser.add_argument('-of', '--out_format', help="Output format, txt or tsv (optional)",
+    parser.add_argument('-of', '--out_format', help="Output format, txt or tsv (optional)", 
                         choices=['txt', 'tsv'], default='tsv', required=False)
     parser.add_argument('-att', '--attention', help="Whether to output attention scores, on or off (optional)",
                         choices=['on', 'off'], default='off', required=False)
-
+    
     args = parser.parse_args()
 
     print('\nLoading models...')
@@ -190,19 +190,19 @@ def main():
     for seq_record in SeqIO.parse(args.seqs, 'fasta'):
         seq_id.append(str(seq_record.id))
         peptide.append(str(seq_record.seq))
-
+    
     # look for indices of valid sequences
     valid_ix = []
     for i in range(len(peptide)):
         if len(peptide[i]) <= 200 and len(peptide[i]) >= 2 and set(peptide[i])-set(aa) == set():
             valid_ix.append(i)
-
+            
     # select valid sequences for prediction
     peptide_valid = [peptide[i] for i in valid_ix]
-
+    
     # generate one-hot encoding input and pad sequences into MAX_LEN long
     X_seq_valid = one_hot_padding(peptide_valid, MAX_LEN)
-
+   
     # ensemble results for the 5 models
     print('\nPredicting...')
     y_score_valid, y_indv_list_valid = ensemble(out_model, X_seq_valid)
@@ -210,12 +210,13 @@ def main():
     y_score = []
     y_log_score = [] # -10*log10(1-y_score)
     y_class = []
-
+    y_length = []
+    y_charge = []
     # get attention scores for each sequence
     if args.attention == 'on':
         attention_valid = get_attention_scores(y_indv_list_valid, att_model, peptide_valid, X_seq_valid)
         attention = []
-
+        
     # get results of the entire list, with invalid sequences labeled with NA
     ix = 0
     for i in range(len(peptide)):
@@ -228,6 +229,11 @@ def main():
             y_class.append(y_class_valid[ix])
             if args.attention == 'on':
                 attention.append(list(attention_valid[ix]))
+
+            # calculate charge
+            y_charge.append(peptide[ix].count('K') + peptide[ix].count('R') - peptide[ix].count('D') - peptide[ix].count('E'))
+            # calculate length
+            y_length.append(len(peptide[ix]))
             ix = ix + 1
         else:
             y_score.append('NA')
@@ -235,11 +241,13 @@ def main():
             y_class.append('NA')
             if args.attention == 'on':
                 attention.append('NA')
-
+            y_charge.append('NA')
+            y_length.append('NA')
     # output the predictions
     out_txt = ''
     for i in range(len(seq_id)):
         temp_txt = 'Sequence ID: '+seq_id[i]+'\n'+'Sequence: '+peptide[i]+'\n' \
+        + 'Length: ' + str(y_length[i]) + '\n' + 'Charge: ' + str(y_charge[i]) + '\n' \
         +'Probability_score: '+str(y_score[i])+'\n'+'AMPlify_log_scaled_score: ' \
         +str(y_log_score[i])+'\n'+'Prediction: '+y_class[i]+'\n'
         if args.attention == 'on':
@@ -247,8 +255,8 @@ def main():
         temp_txt = temp_txt+'\n'
         print(temp_txt)
         out_txt = out_txt + temp_txt
-
-    # save to tsv or xlsx
+    
+    # save to tsv or xlsx    
     if args.out_format is not None:
         print('\nSaving results...')
         out_name = 'AMPlify_results_' + time.strftime('%Y%m%d%H%M%S', time.localtime())
@@ -269,6 +277,8 @@ def main():
                 if args.attention == 'on':
                     out = pd.DataFrame({'Sequence_ID':seq_id,
                                         'Sequence': peptide,
+                                        'Length': y_length,
+                                        'Charge': y_charge,
                                         'Probability_score': y_score,
                                         'AMPlify_log_scaled_score': y_log_score,
                                         'Prediction': y_class,
@@ -276,12 +286,14 @@ def main():
                 else:
                     out = pd.DataFrame({'Sequence_ID':seq_id,
                                         'Sequence': peptide,
+                                        'Length': y_length,
+                                        'Charge': y_charge,
                                         'Probability_score': y_score,
                                         'AMPlify_log_scaled_score': y_log_score,
                                         'Prediction': y_class})
                 out.to_csv(args.out_dir + '/' + out_name, sep='\t', index=False)
                 print('\nResults saved as: ' + args.out_dir + '/' + out_name)
-
+            
 
 if __name__ == "__main__":
     main()
