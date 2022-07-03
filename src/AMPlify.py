@@ -176,7 +176,7 @@ def main():
     
     args = parser.parse_args()
 
-    print('\nLoading models...')
+    print('\nLoading \s models...'%args.model)
     model_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))+'/models/'
     models = [model_dir + args.model + '/AMPlify_' + args.model + '_model_weights_' \
               + str(i+1) + '.h5' for i in range(5)]
