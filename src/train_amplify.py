@@ -92,8 +92,11 @@ def main():
 
     parser.add_argument('-amp_tr', help="Training AMP set, fasta file", required=True)
     parser.add_argument('-non_amp_tr', help="Training non-AMP set, fasta file", required=True)
-    parser.add_argument('-amp_te', help="Test AMP set, fasta file, optional", default=None, required=False)
-    parser.add_argument('-non_amp_te', help="Test non-AMP set, fasta file, optional", default=None, required=False)
+    parser.add_argument('-amp_te', help="Test AMP set, fasta file (optional)", default=None, required=False)
+    parser.add_argument('-non_amp_te', help="Test non-AMP set, fasta file (optional)", default=None, required=False)
+    parser.add_argument('-sample_ratio', 
+                        help="Whether the training set is balanced or not (balanced by default, optional)", 
+                        choices=['balanced', 'imbalanced'], default='balanced', required=False)
     parser.add_argument('-out_dir', help="Output directory", required=True)
     parser.add_argument('-model_name', help="File name of trained model weights", required=True)
     
@@ -103,10 +106,10 @@ def main():
     AMP_train = []
     non_AMP_train = []
     for seq_record in SeqIO.parse(args.amp_tr, 'fasta'):
-        # "../data/AMP_train_20190414.fa"
+        # "../data/AMPlify_AMP_train_common.fa"
         AMP_train.append(str(seq_record.seq))
     for seq_record in SeqIO.parse(args.non_amp_tr, 'fasta'):
-        # "../data/non_AMP_train_20190414.fa"
+        # "../data/AMPlify_non_AMP_train_balanced.fa"
         non_AMP_train.append(str(seq_record.seq))
         
     # sequences for training sets
@@ -132,10 +135,10 @@ def main():
         AMP_test = []
         non_AMP_test = []      
         for seq_record in SeqIO.parse(args.amp_te, 'fasta'):
-            # "../data/AMP_test_20190414.fa"
+            # "../data/AMPlify_AMP_test_common.fa"
             AMP_test.append(str(seq_record.seq))
         for seq_record in SeqIO.parse(args.non_amp_te, 'fasta'):
-            # "../data/non_AMP_test_20190414.fa"
+            # "../data/AMPlify_non_AMP_test_balanced.fa"
             non_AMP_test.append(str(seq_record.seq))
         
         # sequences for test sets
@@ -152,9 +155,14 @@ def main():
     
     for tr_ens, te_ens in ensemble.split(X_train, y_train):
         model = build_model()
-        early_stopping = EarlyStopping(monitor='val_acc',  min_delta=0.001, patience=50, restore_best_weights=True)
-        model.fit(X_train[tr_ens], np.array(y_train[tr_ens]), epochs=1000, batch_size=32, 
-                  validation_data=(X_train[te_ens], y_train[te_ens]), verbose=2, initial_epoch=0, callbacks=[early_stopping])
+        if args.sample_ratio == 'balanced':
+            early_stopping = EarlyStopping(monitor='val_acc',  min_delta=0.001, patience=50, restore_best_weights=True)
+            model.fit(X_train[tr_ens], np.array(y_train[tr_ens]), epochs=1000, batch_size=32, 
+                      validation_data=(X_train[te_ens], y_train[te_ens]), verbose=2, initial_epoch=0, callbacks=[early_stopping])
+        else:
+            model.fit(X_train[tr_ens], np.array(y_train[tr_ens]), epochs=50, batch_size=32, 
+                      validation_data=(X_train[te_ens], y_train[te_ens]), verbose=2, initial_epoch=0, 
+                      class_weight={0: 0.1667, 1: 0.8333})
         temp_pred_train = model.predict(X_train).flatten() # predicted scores on the [whole] training set from the current model
         indv_pred_train.append(temp_pred_train)
         save_file_num = save_file_num + 1

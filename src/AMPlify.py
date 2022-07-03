@@ -161,22 +161,25 @@ def main():
         '''),
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
-    parser.add_argument('-md', '--model_dir', help="Directory of where models are stored (optional)", 
-                        default=os.path.dirname(os.path.dirname(os.path.realpath(__file__)))+'/models', required=False)
-    parser.add_argument('-m', '--model_name', nargs=5, help="File names of 5 trained models (optional)", 
-                        default=['model_weights_1.h5', 'model_weights_2.h5', 'model_weights_3.h5', 
-                                 'model_weights_4.h5', 'model_weights_5.h5'], required=False)
+    parser.add_argument('-m', '--model', help="Balanced or imbalanced model (balanced by default, optional)",
+                        choices=['balanced', 'imbalanced'], default='balanced', required=False)
     parser.add_argument('-s', '--seqs', help="Sequences for prediction, fasta file", required=True)
     parser.add_argument('-od', '--out_dir', help="Output directory (optional)", default=os.getcwd(), required=False)
-    parser.add_argument('-of', '--out_format', help="Output format, txt or tsv (optional)", 
+    parser.add_argument('-of', '--out_format', help="Output format, txt or tsv (tsv by default, optional)", 
                         choices=['txt', 'tsv'], default='tsv', required=False)
-    parser.add_argument('-att', '--attention', help="Whether to output attention scores, on or off (optional)",
+    parser.add_argument('-sub', '--sub_model', 
+                        help="Whether to output sub-model results, on or off (off by default, optional)",
+                        choices=['on', 'off'], default='off', required=False)
+    parser.add_argument('-att', '--attention', 
+                        help="Whether to output attention scores, on or off (off by default, optional)",
                         choices=['on', 'off'], default='off', required=False)
     
     args = parser.parse_args()
 
     print('\nLoading models...')
-    models = [args.model_dir + '/' + args.model_name[i] for i in range(len(args.model_name))]
+    model_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))+'/models/'
+    models = [model_dir + args.model + '/AMPlify_' + args.model + '_model_weights_' \
+              + str(i+1) + '.h5' for i in range(5)]
     # load models for final output
     out_model = load_multi_model(models, build_amplify)
     # load_models for attention
@@ -208,6 +211,7 @@ def main():
     y_score_valid, y_indv_list_valid = ensemble(out_model, X_seq_valid)
     y_class_valid = proba_to_class_name(y_score_valid)
     y_score = []
+    y_indv_list = [[] for n in range(5)]
     y_log_score = [] # -10*log10(1-y_score)
     y_class = []
     y_length = []
@@ -223,6 +227,8 @@ def main():
     for i in range(len(peptide)):
         if i in valid_ix:
             y_score.append(round(y_score_valid[ix], 8))
+            for n in range(5):
+                y_indv_list[n].append(round(y_indv_list_valid[n][ix], 8))
             if y_score_valid[ix] < 0.99999999:
                 y_log_score.append(round(-10*np.log10(1-y_score_valid[ix]), 4))
             else:
@@ -235,6 +241,8 @@ def main():
             ix = ix + 1
         else:
             y_score.append('NA')
+            for n in range(5):
+                y_indv_list[n].append('NA')
             y_log_score.append('NA')
             y_class.append('NA')
             y_length.append('NA')
@@ -246,9 +254,13 @@ def main():
     out_txt = ''
     for i in range(len(seq_id)):
         temp_txt = 'Sequence ID: '+seq_id[i]+'\n'+'Sequence: '+peptide[i]+'\n' \
-        +'Length: '+str(y_length[i])+'\n'+'Charge: '+str(y_charge[i])+'\n' \
-        +'Probability_score: '+str(y_score[i])+'\n'+'AMPlify_log_scaled_score: ' \
-        +str(y_log_score[i])+'\n'+'Prediction: '+y_class[i]+'\n'
+        +'Length: '+str(y_length[i])+'\n'+'Charge: '+str(y_charge[i])+'\n'
+        if args.sub_model == 'on':
+            temp_txt = temp_txt+'Sub-model probability scores: ' \
+            + str([y_indv_list[n][i] for n in range(5)]) + '\n'
+        temp_txt = temp_txt+'Probability score: '+str(y_score[i]) \
+        +'AMPlify_log_scaled_score: '+str(y_log_score[i])+'\n'+'Prediction: ' \
+        +y_class[i]+'\n'
         if args.attention == 'on':
             temp_txt = temp_txt+'Attention: '+str(attention[i])+'\n'
         temp_txt = temp_txt+'\n'
@@ -258,7 +270,7 @@ def main():
     # save to tsv or xlsx    
     if args.out_format is not None:
         print('\nSaving results...')
-        out_name = 'AMPlify_results_' + time.strftime('%Y%m%d%H%M%S', time.localtime())
+        out_name = 'AMPlify_' + args.model + '_results_' + time.strftime('%Y%m%d%H%M%S', time.localtime())
         if (args.out_format).lower() == 'txt':
             out_name = out_name + '.txt'
             if os.path.isfile(args.out_dir + '/' + out_name):
@@ -273,23 +285,18 @@ def main():
             if os.path.isfile(args.out_dir + '/' + out_name):
                 print('\nUnable to save! File already existed!')
             else:
+                out = pd.DataFrame({'Sequence_ID':seq_id,
+                                    'Sequence': peptide,
+                                    'Length': y_length,
+                                    'Charge': y_charge,
+                                    'Probability_score': y_score,
+                                    'AMPlify_log_scaled_score': y_log_score,
+                                    'Prediction': y_class})
+                if args.sub_model == 'on':
+                    for n in range(5):
+                        out.insert(loc = n+4, column = 'Sub_model_%d_probability_score:'%(n+1), value = y_indv_list[n])
                 if args.attention == 'on':
-                    out = pd.DataFrame({'Sequence_ID':seq_id,
-                                        'Sequence': peptide,
-                                        'Length': y_length,
-                                        'Charge': y_charge,
-                                        'Probability_score': y_score,
-                                        'AMPlify_log_scaled_score': y_log_score,
-                                        'Prediction': y_class,
-                                        'Attention': attention})
-                else:
-                    out = pd.DataFrame({'Sequence_ID':seq_id,
-                                        'Sequence': peptide,
-                                        'Length': y_length,
-                                        'Charge': y_charge,
-                                        'Probability_score': y_score,
-                                        'AMPlify_log_scaled_score': y_log_score,
-                                        'Prediction': y_class})
+                    out.insert(loc = len(out.columns), column = 'Attention', value = attention)
                 out.to_csv(args.out_dir + '/' + out_name, sep='\t', index=False)
                 print('\nResults saved as: ' + args.out_dir + '/' + out_name)
             
