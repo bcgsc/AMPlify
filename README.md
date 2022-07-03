@@ -39,10 +39,10 @@ conda deactivate
 ### Datasets
 
 Datasets for training and testing are stored in the `data` folder. Please specify the directory if you would like to use those datasets for training or testing the model.
-* Balanced training set: AMPlify_AMP_train_common.fa + AMPlify_non_AMP_train_balanced.fa
-* Balanced test set: AMPlify_AMP_test_common.fa + AMPlify_non_AMP_test_balanced.fa
-* Imbalanced training set: AMPlify_AMP_train_common.fa + AMPlify_non_AMP_train_imbalanced.fa
-* Imbalanced test set: AMPlify_AMP_test_common.fa + AMPlify_non_AMP_test_imbalanced.fa
+* Balanced training set: `AMPlify_AMP_train_common.fa` + `AMPlify_non_AMP_train_balanced.fa`
+* Balanced test set: `AMPlify_AMP_test_common.fa` + `AMPlify_non_AMP_test_balanced.fa`
+* Imbalanced training set: `AMPlify_AMP_train_common.fa` + `AMPlify_non_AMP_train_imbalanced.fa`
+* Imbalanced test set: `AMPlify_AMP_test_common.fa` + `AMPlify_non_AMP_test_imbalanced.fa`
 
 
 ### Pre-trained sub-models
