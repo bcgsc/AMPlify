@@ -294,7 +294,7 @@ def main():
                                     'Prediction': y_class})
                 if args.sub_model == 'on':
                     for n in range(5):
-                        out.insert(loc = n+4, column = 'Sub_model_%d_probability_score:'%(n+1), value = y_indv_list[n])
+                        out.insert(loc = n+4, column = 'Sub_model_%d_probability_score'%(n+1), value = y_indv_list[n])
                 if args.attention == 'on':
                     out.insert(loc = len(out.columns), column = 'Attention', value = attention)
                 out.to_csv(args.out_dir + '/' + out_name, sep='\t', index=False)
