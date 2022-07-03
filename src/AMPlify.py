@@ -258,7 +258,7 @@ def main():
         if args.sub_model == 'on':
             temp_txt = temp_txt+'Sub-model probability scores: ' \
             + str([y_indv_list[n][i] for n in range(5)]) + '\n'
-        temp_txt = temp_txt+'Probability score: '+str(y_score[i]) \
+        temp_txt = temp_txt+'Probability score: '+str(y_score[i])+'\n' \
         +'AMPlify_log_scaled_score: '+str(y_log_score[i])+'\n'+'Prediction: ' \
         +y_class[i]+'\n'
         if args.attention == 'on':
