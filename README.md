@@ -77,7 +77,7 @@ Expected output: 1) The model weights trained using the specified data; 2) Test 
 
 ### Predict
 
-Usage: `AMPlify.py [-h] [-m {balanced,imbalanced}] -s SEQS [-od OUT_DIR] [-of {txt,tsv}] [-sub {on,off}] [-att {on,off}]`
+Usage: `AMPlify [-h] [-m {balanced,imbalanced}] -s SEQS [-od OUT_DIR] [-of {txt,tsv}] [-sub {on,off}] [-att {on,off}]`
 ```
 optional arguments:
   -h, --help            Show this help message and exit
