@@ -228,27 +228,29 @@ def main():
     ix = 0
     for i in range(len(peptide)):
         if i in valid_ix:
-            y_score.append(round(y_score_valid[ix], 8))
-            for n in range(5):
-                y_indv_list[n].append(round(y_indv_list_valid[n][ix], 8))
+            y_score.append(str(round(y_score_valid[ix], 8)))
             if y_score_valid[ix] < 0.99999999:
-                y_log_score.append(round(-10*np.log10(1-y_score_valid[ix]), 4))
+                y_log_score.append(str(round(-10*np.log10(1-y_score_valid[ix]), 4)))
             else:
-                y_log_score.append(round(-10*np.log10(1-0.99999999), 4))
+                y_log_score.append(str(round(-10*np.log10(1-0.99999999), 4)))
             y_class.append(y_class_valid[ix])
             y_length.append(len(peptide[i]))
             y_charge.append(peptide[i].count('K') + peptide[i].count('R') - peptide[i].count('D') - peptide[i].count('E'))
+            if args.sub_model == 'on':
+                for n in range(5):
+                    y_indv_list[n].append(str(round(y_indv_list_valid[n][ix], 8)))            
             if args.attention == 'on':
                 attention.append(list(attention_valid[ix]))
             ix = ix + 1
         else:
             y_score.append('NA')
-            for n in range(5):
-                y_indv_list[n].append('NA')
             y_log_score.append('NA')
             y_class.append('NA')
             y_length.append('NA')
             y_charge.append('NA')
+            if args.sub_model == 'on':
+                for n in range(5):
+                    y_indv_list[n].append('NA')                
             if args.attention == 'on':
                 attention.append('NA')
 
@@ -259,9 +261,9 @@ def main():
         +'Length: '+str(y_length[i])+'\n'+'Charge: '+str(y_charge[i])+'\n'
         if args.sub_model == 'on':
             temp_txt = temp_txt+'Sub-model probability scores: ' \
-            + str([y_indv_list[n][i] for n in range(5)]) + '\n'
-        temp_txt = temp_txt+'Probability score: '+str(y_score[i])+'\n' \
-        +'AMPlify_log_scaled_score: '+str(y_log_score[i])+'\n'+'Prediction: ' \
+            + ', '.join([y_indv_list[n][i] for n in range(5)]) + '\n'
+        temp_txt = temp_txt+'Probability score: '+y_score[i]+'\n' \
+        +'AMPlify_log_scaled_score: '+y_log_score[i]+'\n'+'Prediction: ' \
         +y_class[i]+'\n'
         if args.attention == 'on':
             temp_txt = temp_txt+'Attention: '+str(attention[i])+'\n'
