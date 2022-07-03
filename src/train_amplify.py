@@ -83,7 +83,7 @@ def predict_by_class(scores):
 
 def main():
     parser = argparse.ArgumentParser(description=dedent('''
-        AMPlify training
+        AMPlify v1.1.0 training
         ------------------------------------------------------
         Given training sets with two labels: AMP and non-AMP,
         train the AMP prediction model.    

@@ -152,7 +152,7 @@ def proba_to_class_name(scores):
 
 def main():
     parser = argparse.ArgumentParser(description=dedent('''
-        AMPlify
+        AMPlify v1.1.0
         ------------------------------------------------------
         Predict whether a sequence is AMP or not.
         Input sequences should be in fasta format. 
