@@ -114,10 +114,10 @@ If you have any questions, comments, or would like to report a bug, please file 
 ### Citation
 
 If you use AMPlify in your work, please cite our publications:
-1. The research article for AMPlify and the discovery of the RaCa series peptides:
+1. The research article for AMPlify and the discovery of RaCa series peptides:
 > Li, C., Sutherland, D., Hammond, S.A. et al. AMPlify: attentive deep learning model for discovery of novel antimicrobial peptides effective against WHO priority pathogens. BMC Genomics 23, 77 (2022). https://doi.org/10.1186/s12864-022-08310-4
 --------------------------------------------------------------------------------
 
-2. The data note paper introduces an imbalanced model in addition to the balanced model:
+2. The data note paper introducing the imbalanced model in addition to the original balanced model:
 > Li, C., Warren, R.L. & Birol, I. Models and data of AMPlify: a deep learning tool for antimicrobial peptide prediction. BMC Res Notes 16, 11 (2023). https://doi.org/10.1186/s13104-023-06279-1
 --------------------------------------------------------------------------------
