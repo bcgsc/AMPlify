@@ -2,6 +2,10 @@
 
 AMPlify is an attentive deep learning model for antimicrobial peptide prediction.
 
+<p align="center">
+	<img src="AMPlify.png"> 
+</p>
+
 ### Dependencies
 
 * Python 3.6
