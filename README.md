@@ -104,9 +104,9 @@ Example: `AMPlify -s ../data/AMPlify_AMP_test_common.fa`
 Expected output: Predicted probability scores, AMPlify log scaled scores, and classes of the input sequences. The AMPlify log scaled score is calculated as `-10*log10(1-Probability_score)`. Results for invalid sequences will be filled with `NA`.
 
 ### AMP discovery
-Additional scripts and data for the AMP discovery pipeline utilized for bullfrog genome mining are provided in `auxiliary/amp_discovery_pipeline` (added in v1.0.1). Parameters for GMAP and MAKER2 are described in the Methods section of the [manuscript](https://doi.org/10.1186/s12864-022-08310-4).
+* Additional scripts and data for the AMP discovery pipeline that has been utilized for bullfrog genome mining are provided in `auxiliary/amp_discovery_pipeline` (added in v1.0.1). Parameters for GMAP and MAKER2 are described in the Methods section of the [manuscript](https://doi.org/10.1186/s12864-022-08310-4).
 
-Additional scripts and data for the AMP mining workflow utilized to mine novel AMPs from the UniProtKB/Swiss-Prot database are provided in `auxiliary/amp_mining_workflow` (added in v2.0.0). The input data and result files are publicly accessible through a Zenodo repository at https://doi.org/10.5281/zenodo.8133088.
+* Additional scripts and data for the AMP mining workflow that has been utilized to mine novel AMPs from the UniProtKB/Swiss-Prot database are provided in `auxiliary/amp_mining_workflow` (added in v2.0.0). The input data and result files are publicly accessible through a Zenodo repository at https://doi.org/10.5281/zenodo.8133088.
 
 ### Author
 
