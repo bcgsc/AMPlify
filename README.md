@@ -52,8 +52,8 @@ Datasets for training and testing are stored in the `data` folder. Please specif
 ### Pre-trained sub-models
 
 Weights for the pre-trained balanced/imbalanced sub-models are stored in the `models` folder.
-* Balanced model: The one proposed in the AMPlify publication; Trained on the balanced training set; Suitable to use for predicting putative AMPs from a relatively curated candidate set (e.g. sequences already filtered by length/charge and through sequence homology search).
-* Imbalanced model: Trained on the imbalanced training set; Suitable for situations where the number of non-AMPs in the input sequence set is far greater than that of AMPs (e.g. a large transcriptomics sequence database).
+* Balanced model: The one proposed in the AMPlify publication; Trained on the balanced training set; Suitable to use for predicting putative AMPs from a relatively curated candidate set (e.g., sequences already filtered by length/charge and through sequence homology search).
+* Imbalanced model: Trained on the imbalanced training set; Suitable for situations where the number of non-AMPs in the input sequence set is far greater than that of AMPs (e.g., a large transcriptomics sequence database).
 
 ### Train
 
@@ -106,7 +106,7 @@ Expected output: Predicted probability scores, AMPlify log scaled scores, and cl
 ### AMP discovery
 * Additional scripts and data for the AMP discovery pipeline that has been utilized for bullfrog genome mining are provided in `auxiliary/amp_discovery_pipeline` (added in v1.0.1). Parameters for GMAP and MAKER2 are described in the Methods section of the [manuscript](https://doi.org/10.1186/s12864-022-08310-4).
 
-* Additional scripts and data for the AMP mining workflow that has been utilized to mine novel AMPs from the UniProtKB/Swiss-Prot database are provided in `auxiliary/amp_mining_workflow` (added in v2.0.0). The input data and result files are publicly accessible through a Zenodo repository at https://doi.org/10.5281/zenodo.8133088.
+* Additional scripts and data for the AMP mining workflow that has been utilized to mine novel AMPs from the UniProtKB/Swiss-Prot database are provided in `auxiliary/amp_mining_workflow` (added in v2.0.0). Detailed methods can be found in the [manuscript](https://doi.org/10.1101/2024.05.24.595811). The input data and result files are publicly accessible through a [Zenodo repository](https://doi.org/10.5281/zenodo.8133088).
 
 ### Author
 
@@ -126,3 +126,6 @@ If you use AMPlify in your work, please cite our publications:
 2. The data note paper introducing the imbalanced model in addition to the original balanced model:
 > Li, C., Warren, R.L. & Birol, I. Models and data of AMPlify: a deep learning tool for antimicrobial peptide prediction. BMC Res Notes 16, 11 (2023). https://doi.org/10.1186/s13104-023-06279-1
 --------------------------------------------------------------------------------
+
+3. The research article for mining the UniProtKB/Swiss-Prot database for novel AMPs:
+> Li, C., Sutherland, D., Salehi, A. et al. Mining the UniProtKB/Swiss-Prot database for antimicrobial peptides. bioRxiv (2024). https://doi.org/10.1101/2024.05.24.595811
