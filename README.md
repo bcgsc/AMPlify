@@ -103,6 +103,8 @@ Example: `AMPlify -s ../data/AMPlify_AMP_test_common.fa`
 
 Expected output: Predicted probability scores, AMPlify log scaled scores, and classes of the input sequences. The AMPlify log scaled score is calculated as `-10*log10(1-Probability_score)`. Results for invalid sequences will be filled with `NA`.
 
+Note: In the default setting, sequences with `AMPlify scores > 3.01` (i.e., `AMPlify probability scores > 0.5`) are predicted as AMPs.
+
 ### AMP discovery
 * Additional scripts and data for the AMP discovery pipeline that has been utilized for bullfrog genome mining are provided in `auxiliary/amp_discovery_pipeline` (added in v1.0.1). Parameters for GMAP and MAKER2 are described in the Methods section of the [manuscript](https://doi.org/10.1186/s12864-022-08310-4).
 
