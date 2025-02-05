@@ -48,6 +48,9 @@ Datasets for training and testing are stored in the `data` folder. Please specif
 * Imbalanced training set: `AMPlify_AMP_train_common.fa` + `AMPlify_non_AMP_train_imbalanced.fa`
 * Imbalanced test set: `AMPlify_AMP_test_common.fa` + `AMPlify_non_AMP_test_imbalanced.fa`
 
+### User-Specified Data:
+
+AMPlify only accepts 20 standard amino acids. However, if the user would like to specify the stop codon with adding a asterisk character to the end of the peptide sequences, AMPlify would ignore the last character and allow that peptide to be participate in the training or inference stages.
 
 ### Pre-trained sub-models
 
