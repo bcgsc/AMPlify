@@ -107,10 +107,16 @@ def main():
     non_AMP_train = []
     for seq_record in SeqIO.parse(args.amp_tr, 'fasta'):
         # "../data/AMPlify_AMP_train_common.fa"
-        AMP_train.append(str(seq_record.seq))
+        if str(seq_record.seq)[-1] == '*':
+            AMP_train.append(str(seq_record.seq)[:-1])
+        else:
+            AMP_train.append(str(seq_record.seq))
     for seq_record in SeqIO.parse(args.non_amp_tr, 'fasta'):
         # "../data/AMPlify_non_AMP_train_balanced.fa"
-        non_AMP_train.append(str(seq_record.seq))
+        if str(seq_record.seq)[-1] == '*':
+            non_AMP_train.append(str(seq_record.seq)[:-1])
+        else:
+            non_AMP_train.append(str(seq_record.seq))
         
     # sequences for training sets
     train_seq = AMP_train + non_AMP_train    
@@ -136,10 +142,16 @@ def main():
         non_AMP_test = []      
         for seq_record in SeqIO.parse(args.amp_te, 'fasta'):
             # "../data/AMPlify_AMP_test_common.fa"
-            AMP_test.append(str(seq_record.seq))
+            if str(seq_record.seq)[-1] == '*':
+                AMP_test.append(str(seq_record.seq)[:-1])
+            else:
+                AMP_test.append(str(seq_record.seq))
         for seq_record in SeqIO.parse(args.non_amp_te, 'fasta'):
             # "../data/AMPlify_non_AMP_test_balanced.fa"
-            non_AMP_test.append(str(seq_record.seq))
+            if str(seq_record.seq)[-1] == '*':
+                non_AMP_test.append(str(seq_record.seq)[:-1])
+            else:
+                non_AMP_test.append(str(seq_record.seq))
         
         # sequences for test sets
         test_seq = AMP_test + non_AMP_test
