@@ -200,11 +200,12 @@ def main():
     valid_ix = []
     for i in range(len(peptide)):
         if len(peptide[i]) <= 200 and len(peptide[i]) >= 2:
-            if set(peptide[i])-set(aa) == set() or (set(peptide[i][:-1])-set(aa)==set() and peptide[i][-1]=='*'): # either does not contain nonstandard amino acids or the last character is '*'
+            if set(peptide[i])-set(aa) == set() or (set(peptide[i][:-1])-set(aa) == set() and peptide[i][-1] == '*'):
+                # either does not contain nonstandard amino acids or the last character is '*'
                 valid_ix.append(i)
             
     # select valid sequences for prediction
-    peptide_valid = [peptide[i] if peptide[i][-1]!="*" else peptide[i][:-1] for i in valid_ix]
+    peptide_valid = [peptide[i] if peptide[i][-1] != '*' else peptide[i][:-1] for i in valid_ix]
     
     # generate one-hot encoding input and pad sequences into MAX_LEN long
     X_seq_valid = one_hot_padding(peptide_valid, MAX_LEN)

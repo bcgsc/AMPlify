@@ -50,7 +50,7 @@ Datasets for training and testing are stored in the `data` folder. Please specif
 
 ### User-Specified Data:
 
-AMPlify only accepts 20 standard amino acids. However, if the user specifies the stop codon with adding a asterisk character to the end of the peptide sequences, AMPlify would ignore the last character of the peptides and allow them to be participate in the training or inference stages.
+AMPlify only accepts the 20 standard amino acids. However, if the user specifies a stop codon by adding an asterisk character to the end of a peptide sequence, AMPlify will ignore the last character and allow the peptide to participate in the training or inference stage.
 
 ### Pre-trained sub-models
 
