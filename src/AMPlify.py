@@ -152,12 +152,13 @@ def proba_to_class_name(scores):
 
 def main():
     parser = argparse.ArgumentParser(description=dedent('''
-        AMPlify v2.0.0
+        AMPlify v2.0.1
         ------------------------------------------------------
         Predict whether a sequence is AMP or not.
         Input sequences should be in fasta format. 
         Sequences should be shorter than 201 amino acids long, 
-        and should not contain amino acids other than the 20 standard ones. 
+        and should not contain amino acids other than the 20 standard ones,
+        except for the stop codon indicator (*) at the end of the sequence (optional). 
         '''),
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
