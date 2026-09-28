@@ -16,7 +16,7 @@ import time
 from Bio import SeqIO
 import numpy as np
 import pandas as pd
-from layers import Attention, MultiHeadAttention
+from AMPlify.src.layers import Attention, MultiHeadAttention
 from keras.models import Model
 from keras.layers import Masking, Dense, LSTM, Bidirectional, Input, Dropout
 
@@ -45,6 +45,14 @@ def one_hot_padding(seq_list,padding):
         feat_list.append(feat)   
     return(np.array(feat_list))
 
+
+def load_threshold(threshold_dir, n_folds=5):
+    thresholds = [float(np.load(os.path.join(threshold_dir, f'optimal_threshold_{f}.npy')))
+                  for f in range(n_folds)]
+    med = float(np.median(thresholds))
+    print(f'\nLoaded per-fold thresholds: {[round(t, 4) for t in thresholds]}')
+    print(f'Median threshold (used for classification): {med:.4f}')
+    return med
 
 def build_amplify():
     """
@@ -114,8 +122,6 @@ def get_attention_scores(indv_pred_list, attention_model_list, seq_list, X):
     Output: 
         attention scores for all sequences from the most confident model
     """
-    #X = one_hot_padding(seq_list, MAX_LEN)
-    # calculate all attention scores
     attention_scores_list = []
     for i in range(len(attention_model_list)):
         attention_with_padding = attention_model_list[i].predict(X)
@@ -134,16 +140,16 @@ def get_attention_scores(indv_pred_list, attention_model_list, seq_list, X):
     return confident_attention
 
 
-def proba_to_class_name(scores):
+def proba_to_class_name(scores, threshold=0.5):
     """
-    Turn prediction scores into real class names.
-    If score > 0.5, label the sample as AMP; else non-AMP.
-    Input: scores - scores predicted by the model, 1-d array.
-    Output: an array of class labels.
+    Turn prediction scores into class labels using the given threshold.
+    Input: scores - 1-d array of predicted probabilities.
+           threshold - classification cutoff (default 0.5).
+    Output: array of 'AMP' / 'non-AMP' labels.
     """
     classes = []
     for i in range(len(scores)):
-        if scores[i]>0.5:
+        if scores[i] > threshold:
             classes.append('AMP')
         else:
             classes.append('non-AMP')
@@ -152,7 +158,7 @@ def proba_to_class_name(scores):
 
 def main():
     parser = argparse.ArgumentParser(description=dedent('''
-        AMPlify v2.0.1
+        AMPlify v3.0.1
         ------------------------------------------------------
         Predict whether a sequence is AMP or not.
         Input sequences should be in fasta format. 
@@ -162,30 +168,44 @@ def main():
         '''),
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
-    parser.add_argument('-m', '--model', help="Balanced or imbalanced model (balanced by default, optional)",
-                        choices=['balanced', 'imbalanced'], default='balanced', required=False)
-    parser.add_argument('-s', '--seqs', help="Sequences for prediction, fasta file", required=True)
-    parser.add_argument('-od', '--out_dir', help="Output directory (optional)", default=os.getcwd(), required=False)
-    parser.add_argument('-of', '--out_format', help="Output format, txt or tsv (tsv by default, optional)", 
+    parser.add_argument('-m', '--model', help='afp_imb, abp_imb',
+                        choices=['afp_imb', 'abp_imb'], default='afp_imb', required=False)
+    parser.add_argument('-s', '--seqs', help='Sequences for prediction, fasta file', required=True)
+    parser.add_argument('-od', '--out_dir', help='Output directory (optional)', default=os.getcwd(), required=False)
+    parser.add_argument('-of', '--out_format', help='Output format, txt or tsv (tsv by default, optional)', 
                         choices=['txt', 'tsv'], default='tsv', required=False)
     parser.add_argument('-sub', '--sub_model', 
-                        help="Whether to output sub-model results, on or off (off by default, optional)",
+                        help='Whether to output sub-model results, on or off (off by default, optional)',
                         choices=['on', 'off'], default='off', required=False)
     parser.add_argument('-att', '--attention', 
-                        help="Whether to output attention scores, on or off (off by default, optional)",
+                        help='Whether to output attention scores, on or off (off by default, optional)',
                         choices=['on', 'off'], default='off', required=False)
-    
+    parser.add_argument('-th', '--threshold_dir',
+                        help='Directory containing per-fold optimal threshold .npy files '
+                             '(optimal_threshold_0.npy ... optimal_threshold_4.npy). '
+                             'Required when using the imbalanced model; ignored otherwise.',
+                        default=None, required=True)
+
     args = parser.parse_args()
 
+    # resolve classification threshold
+    if 'imb' in args.model:
+        if args.threshold_dir is None:
+            parser.error('--threshold_dir is required when using the imbalanced model.')
+        threshold = load_threshold(args.threshold_dir)
+    else:
+        threshold = 0.5
+        print(f'\nUsing default threshold: {threshold}')
+
     model_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))+'/models/'
-    models = [model_dir + args.model + '/AMPlify_' + args.model + '_model_weights_' \
-              + str(i+1) + '.h5' for i in range(5)]
+    models = [model_dir + args.model +'/AMPlify_' + args.model + '_weights_' \
+              + str(i) + '.h5' for i in range(5)]
     print('\nLoading %s models...'%args.model)
     for n in range(5):
         print(models[n])
     # load models for final output
     out_model = load_multi_model(models, build_amplify)
-    # load_models for attention
+    # load models for attention
     if args.attention == 'on':
         att_model = load_multi_model(models, build_attention)
 
@@ -202,7 +222,6 @@ def main():
     for i in range(len(peptide)):
         if len(peptide[i]) <= 200 and len(peptide[i]) >= 2:
             if set(peptide[i])-set(aa) == set() or (set(peptide[i][:-1])-set(aa) == set() and peptide[i][-1] == '*'):
-                # either does not contain nonstandard amino acids or the last character is '*'
                 valid_ix.append(i)
             
     # select valid sequences for prediction
@@ -214,7 +233,7 @@ def main():
     # ensemble results for the 5 models
     print('\nPredicting...')
     y_score_valid, y_indv_list_valid = ensemble(out_model, X_seq_valid)
-    y_class_valid = proba_to_class_name(y_score_valid)
+    y_class_valid = proba_to_class_name(y_score_valid, threshold=threshold)
     y_score = []
     y_indv_list = [[] for n in range(5)]
     y_log_score = [] # -10*log10(1-y_score)
@@ -274,7 +293,7 @@ def main():
         print(temp_txt)
         out_txt = out_txt + temp_txt
     
-    # save to tsv or xlsx    
+    # save to tsv or txt
     if args.out_format is not None:
         print('\nSaving results...')
         out_name = 'AMPlify_' + args.model + '_results_' + time.strftime('%Y%m%d%H%M%S', time.localtime())
@@ -308,5 +327,5 @@ def main():
                 print('\nResults saved as: ' + args.out_dir + '/' + out_name)
             
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
